@@ -62,6 +62,13 @@ class Connection(object):
             return req.json()
         return {}
 
+    def download_binary(self, url, filename):
+        ''' Downloads a binary file from the server'''
+        url = url if url.startswith('/') else u'/' + url
+        req = requests.get(self._server + str(url))
+        with open(filename, 'wb') as f:
+            f.write(req.content)
+
 
 class Error(Exception):
     ''' Connection errors. '''
@@ -125,6 +132,13 @@ class Section(object):
     def __str__(self):
         return '%s: %s [%s]' % (self.group, self.name, self.type)
 
+    def current_term(self):
+        now = datetime.now().date()
+        for term in self.terms:
+            if term.start_date <= now and term.end_date >= now:
+                return term
+        return None
+
 
 class Term(object):
     ''' A term within a section. '''
@@ -137,8 +151,11 @@ class Term(object):
         self.term_id = source["termid"]
         self.section = section
         self.badges = []
+        self.badges_loaded = False
         self.programme = []
+        self.programme_loaded = False
         self.members = []
+        self.members_loaded = False
 
     def __str__(self):
         start_date = self.start_date.strftime('%Y-%m-%d')
@@ -150,9 +167,21 @@ class Term(object):
         self.badges = []
         self.__load_badges(conn, 1)
         self.__load_badges(conn, 2)
+        self.badges_loaded = True
+
+    def load_badges_by_person(self, conn):
+        '''Retrieves the badges for the members for the term. '''
+        data = conn.download('/ext/badges/badgesbyperson/?action=loadBadgesByMember&sectionid=%s&term_id=%s' %
+                             (self.section.section_id, self.term_id))
+        badge_report = []
+        for rec in data['data']:
+            member = Member(rec)
+            badge_report.append(member)
+        return badge_report
 
     def __load_badges(self, conn, badge_type):
         '''Retrieves the badges for the term. '''
+        number = len(self.badges) + 1
         data = conn.download(
             '/ext/badges/records/?action=getBadgeStructureByType' +
             '&a=1&section=%s&type_id=%s&term_id=%s&section_id=%s' %
@@ -165,8 +194,9 @@ class Term(object):
                 parts = structure[badge_id]
             except KeyError:
                 parts = [{}, {}]
-            badge = Badge(value, parts, self)
+            badge = Badge(number, value, parts, self)
             self.badges.append(badge)
+            number += 1
 
     def find_badge(self, name):
         ''' Finds a badge by its name. '''
@@ -184,6 +214,7 @@ class Term(object):
         for rec in data['items']:
             meeting = Meeting(self, rec)
             self.programme.append(meeting)
+        self.programme_loaded = True
 
     def load_members(self, conn):
         ''' Loads the current members in the term. '''
@@ -197,6 +228,7 @@ class Term(object):
         for _, rec in data['data'].items():
             member = Member(rec)
             self.members.append(member)
+        self.members_loaded = True
 
     def import_programme(self, filename, conn):
         ''' Imports a programme from a CSV file.
@@ -234,7 +266,8 @@ class Term(object):
 class Badge(object):
     ''' Defines a badge. '''
 
-    def __init__(self, details, structure, term):
+    def __init__(self, number, details, structure, term):
+        self.number = number
         self.term = term
         self.section = term.section
         self.badge_id = details['badge_identifier']
@@ -243,11 +276,20 @@ class Badge(object):
         self.name = details['name']
         self.type = details['group_name']
         self.progress = []
+        self.progress_loaded = False
         try:
             parts = structure[1]['rows']
         except (KeyError, IndexError):
             parts = []
         self.parts = list([BadgePart(part) for part in parts])
+
+    def __str__(self):
+        badge_type = self.type
+        if badge_type is None or badge_type == '':
+            badge_type = 'Unknown'
+        return '%d: %s [%s]' % (self. number,
+                                self.name,
+                                badge_type)
 
     def load_progress(self, conn):
         ''' Loads the progress of the section for this badge. '''
@@ -259,11 +301,19 @@ class Badge(object):
              self.section.section_id, self.__version))
         for person in data["items"]:
             self.progress.append(BadgeProgress(person, self))
+        self.progress_loaded = True
 
-    def export_progress(self, filename):
+    def export_progress(self, filename=None, workbook=None):
         ''' Exports the badge progress to an Excel file. '''
-        workbook = xlsxwriter.Workbook(filename)
-        worksheet = workbook.add_worksheet(self.name)
+        close_workbook = False
+        if workbook is None:
+            close_workbook = True
+            workbook = xlsxwriter.Workbook(filename)
+
+        ws_name = self.name
+        if len(ws_name) > 30:
+            ws_name = ws_name[0:27] + '...'
+        worksheet = workbook.add_worksheet(ws_name)
         bold = workbook.add_format({'bold': True, 'font_size': 16})
         worksheet.merge_range(0, 0, 0, len(self.parts), self.name, bold)
         bold = workbook.add_format({'bold': True})
@@ -283,7 +333,8 @@ class Badge(object):
                     worksheet.write(row, col, person.parts[part.part_id])
                 except KeyError:
                     pass
-        workbook.close()
+        if close_workbook:
+            workbook.close()
 
 
 class BadgePart(object):
@@ -296,6 +347,9 @@ class BadgePart(object):
             self.description = source['tooltip']
         except KeyError:
             self.description = ''
+
+    def __str__(self):
+        return self.name
 
 
 class BadgeProgress(object):
@@ -313,6 +367,10 @@ class BadgeProgress(object):
                 self.parts[part_id] = source[part_id]
             except KeyError:
                 pass
+
+    def __str__(self):
+        completed = ' [Complete]' if self.completed else ''
+        return '%s, %s%s' % (self.lastname, self.firstname, completed)
 
 
 class Meeting(object):
@@ -431,15 +489,44 @@ class Member(object):
     ''' Defines a member. '''
 
     def __init__(self, source):
-        self.member_id = source['member_id']
-        self.first_name = source['first_name']
-        self.last_name = source['last_name']
+        try:
+            self.member_id = source['member_id']
+        except KeyError:
+            self.member_id = source['scout_id']
+
+        try:
+            self.first_name = source['first_name']
+        except KeyError:
+            self.first_name = source['firstname']
+
+        try:
+            self.last_name = source['last_name']
+        except KeyError:
+            self.last_name = source['lastname']
+
         self.is_active = source['active']
-        self.date_of_birth = source['date_of_birth']
+        try:
+            self.date_of_birth = source['date_of_birth']
+        except KeyError:
+            self.date_of_birth = source['dob']
+
         self.patrol = source['patrol']
         self.role = source['patrol_role_level_label']
+        self.badges = []
+        try:
+            self.badges = [BadgeLink(badge) for badge in source['badges']]
+        except KeyError:
+            print 'No bades'
+
 
     def __str__(self):
         return '%s, %s [%s]' % (self.last_name,
                                 self.first_name,
                                 (self.patrol + ' ' + self.role).strip())
+
+class BadgeLink(object):
+    def __init__(self, source):
+        self.completed = source['completed'] == '1'
+        self.awarded = source['awarded'] == '1'
+        self.picture = source['picture']
+        self.name = source['badge']

@@ -1,3 +1,6 @@
 __pycache__/*.pyc
 *.pyc
 secret.json
+*.xlsx
+*.docx
+badge_images/*.png
