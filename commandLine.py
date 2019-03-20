@@ -2,6 +2,7 @@
 
 import os
 import sys
+import traceback
 from datetime import date
 
 import xlsxwriter
@@ -78,6 +79,7 @@ class ProgrammeManager(object):
                 cmd(cmd_args)
             except Exception as ex:
                 print 'Unexpected error: %s' % (str(ex), )
+                traceback.print_exc()
 
 
     def _split_cmd(self, cmd_text):
@@ -181,7 +183,7 @@ class ProgrammeManager(object):
             print 'Term must be set first'
             return
 
-        if not self._term.programme_loaded:
+        if not self._term.programme_loaded > 0:
             print 'Loading programme...'
             self._term.load_programme(self._conn)
 
@@ -206,6 +208,14 @@ class ProgrammeManager(object):
                     row += 1
                 workbook.close()
                 print '...done'
+            elif args[0] == 'members':
+                if not self._term.programme_loaded > 1:
+                    print '...loading attendance...'
+                    self._term.load_programme(self._conn, True)
+                for meeting in self._term.programme:
+                    print str(meeting)
+                    for member in meeting.members:
+                        print '- ' + str(member)
             else:
                 print 'Unknown command'
         else:

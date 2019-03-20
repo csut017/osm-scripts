@@ -153,7 +153,7 @@ class Term(object):
         self.badges = []
         self.badges_loaded = False
         self.programme = []
-        self.programme_loaded = False
+        self.programme_loaded = 0
         self.members = []
         self.members_loaded = False
 
@@ -206,7 +206,7 @@ class Term(object):
         except IndexError:
             return None
 
-    def load_programme(self, conn):
+    def load_programme(self, conn, include_attendance = False):
         ''' Loads the programme for the term. '''
         data = conn.download('/ext/programme/?action=getProgrammeSummary&sectionid=%s&termid=%s' %
                              (self.section.section_id, self.term_id))
@@ -214,7 +214,20 @@ class Term(object):
         for rec in data['items']:
             meeting = Meeting(self, rec)
             self.programme.append(meeting)
-        self.programme_loaded = True
+        self.programme_loaded = 1
+
+        if include_attendance:
+            meetings = list([(meeting.date.strftime('%Y-%m-%d'), meeting) for meeting in self.programme])
+            data = conn.download('/ext/members/attendance/?action=get&sectionid=%s&termid=%s' % (self.section.section_id, self.term_id))
+            for rec in data['items']:
+                member = Member(rec)
+                for meeting in meetings:
+                    try:
+                        if rec[meeting[0]] == 'Yes':
+                            meeting[1].members.append(member)
+                    except KeyError:
+                        pass
+            self.programme_loaded = 2
 
     def load_members(self, conn):
         ''' Loads the current members in the term. '''
@@ -378,6 +391,7 @@ class Meeting(object):
 
     def __init__(self, term, source=None):
         self.term = term
+        self.members = []
         if source is None:
             self.name = None
             self.pre_notes = None
@@ -492,7 +506,10 @@ class Member(object):
         try:
             self.member_id = source['member_id']
         except KeyError:
-            self.member_id = source['scout_id']
+            try:
+                self.member_id = source['scout_id']
+            except KeyError:
+                self.member_id = source['scoutid']
 
         try:
             self.first_name = source['first_name']
