@@ -189,10 +189,14 @@ class ProgrammeManager(object):
 
         if len(args) >= 1:
             if args[0] == 'export':
+                if len(args) < 2:
+                    print 'Missing filename'
+                    return
+
                 filename = ensureExtension(args[1], '.xlsx')
                 workbook = xlsxwriter.Workbook(filename)
 
-                print 'Exporting programme...'
+                print '...exporting programme...'
                 worksheet = workbook.add_worksheet(self._term.name)
                 row = 1
 
