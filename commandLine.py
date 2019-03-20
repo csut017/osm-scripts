@@ -184,8 +184,33 @@ class ProgrammeManager(object):
         if not self._term.programme_loaded:
             print 'Loading programme...'
             self._term.load_programme(self._conn)
-        for meeting in self._term.programme:
-            print str(meeting)
+
+        if len(args) >= 1:
+            if args[0] == 'export':
+                filename = ensureExtension(args[1], '.xlsx')
+                workbook = xlsxwriter.Workbook(filename)
+
+                print 'Exporting programme...'
+                worksheet = workbook.add_worksheet(self._term.name)
+                row = 1
+
+                bold = workbook.add_format({'bold': True})
+                worksheet.write('A1', 'Date', bold)
+                worksheet.write('B1', 'Name', bold)
+                worksheet.write('C1', 'Leader', bold)
+                dateFormat = workbook.add_format({'num_format': 'd/m/yyyy'})
+                for meeting in self._term.programme:
+                    worksheet.write_datetime(row, 0, meeting.date, dateFormat)
+                    worksheet.write(row, 1, meeting.name)
+                    worksheet.write(row, 2, meeting.leader)
+                    row += 1
+                workbook.close()
+                print '...done'
+            else:
+                print 'Unknown command'
+        else:
+            for meeting in self._term.programme:
+                print str(meeting)
 
     def _list_badges(self, args):
         if self._term is None:
@@ -218,7 +243,7 @@ class ProgrammeManager(object):
 
         print '...generating badge report...'
         now = date.today()
-        filename = args[-1]
+        filename = ensureExtension(args[-1], '.docx')
         document = Document()
 
         section = document.sections[0]
@@ -305,7 +330,7 @@ class ProgrammeManager(object):
             print 'Missing filename'
             return
 
-        filename = args[-1]
+        filename = ensureExtension(args[-1], '.xlsx')
         badges = [self._term.badges[int(n) - 1] for n in args[:-1]]
         workbook = xlsxwriter.Workbook(filename)
 
@@ -325,6 +350,9 @@ class ProgrammeManager(object):
         workbook.close()
         print '...done'
 
+
+def ensureExtension(filename, extension):
+    return filename if filename.lower().endswith(extension) else filename + extension
 
 if __name__ == "__main__":
     mgr = ProgrammeManager()
