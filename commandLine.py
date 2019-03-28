@@ -8,7 +8,8 @@ from datetime import date
 import xlsxwriter
 from docx import Document
 from docx.enum.section import WD_ORIENT
-from docx.shared import Cm
+from docx.enum.style import WD_STYLE_TYPE
+from docx.shared import Cm, Pt
 from osm import Connection, Manager
 
 
@@ -189,29 +190,7 @@ class ProgrammeManager(object):
 
         if len(args) >= 1:
             if args[0] == 'export':
-                if len(args) < 2:
-                    print 'Missing filename'
-                    return
-
-                filename = ensureExtension(args[1], '.xlsx')
-                workbook = xlsxwriter.Workbook(filename)
-
-                print '...exporting programme...'
-                worksheet = workbook.add_worksheet(self._term.name)
-                row = 1
-
-                bold = workbook.add_format({'bold': True})
-                worksheet.write('A1', 'Date', bold)
-                worksheet.write('B1', 'Name', bold)
-                worksheet.write('C1', 'Leader', bold)
-                dateFormat = workbook.add_format({'num_format': 'd/m/yyyy'})
-                for meeting in self._term.programme:
-                    worksheet.write_datetime(row, 0, meeting.date, dateFormat)
-                    worksheet.write(row, 1, meeting.name)
-                    worksheet.write(row, 2, meeting.leader)
-                    row += 1
-                workbook.close()
-                print '...done'
+                self._export_program(args)
             elif args[0] == 'members':
                 if not self._term.programme_loaded > 1:
                     print '...loading attendance...'
@@ -226,6 +205,31 @@ class ProgrammeManager(object):
             for meeting in self._term.programme:
                 print str(meeting)
 
+    def _export_program(self, args):
+        if len(args) < 2:
+            print 'Missing filename'
+            return
+
+        filename = ensureExtension(args[1], '.xlsx')
+        workbook = xlsxwriter.Workbook(filename)
+
+        print '...exporting programme...'
+        worksheet = workbook.add_worksheet(self._term.name)
+        row = 1
+
+        bold = workbook.add_format({'bold': True})
+        worksheet.write('A1', 'Date', bold)
+        worksheet.write('B1', 'Name', bold)
+        worksheet.write('C1', 'Leader', bold)
+        dateFormat = workbook.add_format({'num_format': 'd/m/yyyy'})
+        for meeting in self._term.programme:
+            worksheet.write_datetime(row, 0, meeting.date, dateFormat)
+            worksheet.write(row, 1, meeting.name)
+            worksheet.write(row, 2, meeting.leader)
+            row += 1
+        workbook.close()
+        print '...done'
+
     def _list_badges(self, args):
         if self._term is None:
             print 'Term must be set first'
@@ -234,6 +238,8 @@ class ProgrammeManager(object):
         if len(args) >= 1:
             if args[0] == 'report':
                 self._generate_badge_report(args[1:])
+            elif args[0] == 'dump':
+                self._dump_badges(args[1:])
             else:
                 print 'Unknown command'
         else:
@@ -243,6 +249,37 @@ class ProgrammeManager(object):
 
             for badge in self._term.badges:
                 print str(badge)
+
+    def _dump_badges(self, args):
+        if len(args) < 1:
+            print 'Missing filename'
+            return
+
+        if not self._term.badges_loaded:
+            print 'Loading badges...'
+            self._term.load_badges(self._conn)
+
+        print 'Dumping badges...'
+        filename = ensureExtension(args[-1], '.xlsx')
+        workbook = xlsxwriter.Workbook(filename)
+
+        worksheet = workbook.add_worksheet('Badges')
+        row = 1
+
+        bold = workbook.add_format({'bold': True})
+        worksheet.write('A1', 'Name', bold)
+        worksheet.write('B1', 'Id', bold)
+        worksheet.write('C1', 'Type', bold)
+        worksheet.write('D1', 'Picture', bold)
+        for badge in self._term.badges:
+            worksheet.write(row, 0, badge.name)
+            worksheet.write(row, 1, badge.badge_id)
+            worksheet.write(row, 2, badge.type)
+            worksheet.write(row, 3, badge.picture)
+            row += 1
+        workbook.close()
+
+        print '...done'
 
     def _generate_badge_report(self, args):
         if len(args) < 1:
@@ -259,27 +296,39 @@ class ProgrammeManager(object):
         now = date.today()
         filename = ensureExtension(args[-1], '.docx')
         document = Document()
+        headingStyle = document.styles.add_style('TableHeading', WD_STYLE_TYPE.PARAGRAPH)
+        headingStyle.font.bold=True
 
         section = document.sections[0]
         new_width, new_height = section.page_height, section.page_width
         section.orientation = WD_ORIENT.LANDSCAPE
         section.page_width = new_width
         section.page_height = new_height
+        section.left_margin = Cm(1)
+        section.right_margin = Cm(1)
 
         section.header.paragraphs[0].text = 'Badge Report'
         section.footer.paragraphs[0].text = 'Generated ' + now.strftime('%d %B %Y')
-        table = document.add_table(rows = 1, cols = 2)
-        table.columns[0].width = new_width / 5
-        table.columns[1].width = new_width / 6 * 4
+        table = document.add_table(rows = 1, cols = 2, style='Table Grid')
+        table.columns[0].width = Cm(5)
+        table.columns[1].width = Cm(21)
         cells = table.rows[0].cells
         cells[0].text = 'Person'
         cells[1].text = 'Badges'
+        cells[0].width = Cm(5)
+        cells[1].width = Cm(21)
+        clearFormatting(cells[0].paragraphs[0], headingStyle)
+        clearFormatting(cells[1].paragraphs[0], headingStyle)
         for person in report:
             cells = table.add_row().cells
             name = '%s %s' % (person.first_name, person.last_name)
             print '...adding row for %s...' % (name, )
             cells[0].text = name
+            clearFormatting(cells[0].paragraphs[0])
             para = cells[1].paragraphs[0]
+            clearFormatting(para)
+            cells[0].width = Cm(5)
+            cells[1].width = Cm(21)
             for badge in person.badges:
                 badge_path = os.path.join('badge_images', os.path.basename(badge.picture))
                 if not os.path.exists(badge_path):
@@ -367,6 +416,12 @@ class ProgrammeManager(object):
 
 def ensureExtension(filename, extension):
     return filename if filename.lower().endswith(extension) else filename + extension
+
+def clearFormatting(paragraph, style=None):
+    paragraph.paragraph_format.space_before = Pt(0)
+    paragraph.paragraph_format.space_after = Pt(0)
+    if style is not None:
+        paragraph.style = style
 
 if __name__ == "__main__":
     mgr = ProgrammeManager()

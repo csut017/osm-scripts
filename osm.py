@@ -288,6 +288,7 @@ class Badge(object):
         self.__version = details['badge_version']
         self.name = details['name']
         self.type = details['group_name']
+        self.picture = details['picture']
         self.progress = []
         self.progress_loaded = False
         try:
