@@ -15,7 +15,8 @@
                 "WaitOnAbnormalExit",
                 "WaitOnNormalExit",
                 "RedirectOutput"
-            ]
+            ],
+            "args": ["current", "Cubs"]
         },
         {
             "name": "PySpark",

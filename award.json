@@ -1,0 +1,60 @@
+{
+    "badges": [{
+        "name": "Cub Badge",
+        "parts": [{
+            "name": "Badge",
+            "id": "99_0"
+        }]
+    }, {
+        "name": "Bronze",
+        "parts": [{
+            "name": "Outdoors Cornerstone",
+            "id": "136_0"
+        }, {
+            "name": "Community Cornerstone",
+            "id": "137_0"
+        }, {
+            "name": "Personal Development Cornerstone",
+            "id": "138_0"
+        }, {
+            "name": "New Experiences Cornerstone",
+            "id": "139_0"
+        }]
+    }, {
+        "name": "Silver",
+        "parts": [{
+            "name": "Outdoors Cornerstone",
+            "id": "142_0"
+        }, {
+            "name": "Community Cornerstone",
+            "id": "143_0"
+        }, {
+            "name": "Personal Development Cornerstone",
+            "id": "144_0"
+        }, {
+            "name": "New Experiences Cornerstone",
+            "id": "145_0"
+        }]
+    }, {
+        "name": "Gold",
+        "parts": [{
+            "name": "Outdoors Cornerstone",
+            "id": "148_0"
+        }, {
+            "name": "Community Cornerstone",
+            "id": "149_0"
+        }, {
+            "name": "Personal Development Cornerstone",
+            "id": "150_0"
+        }, {
+            "name": "New Experiences Cornerstone",
+            "id": "151_0"
+        }]
+    }, {
+        "name": "Scout Badge",
+        "parts": [{
+            "name": "Badge",
+            "id": "1_3"
+        }]
+    }]
+}

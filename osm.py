@@ -206,7 +206,7 @@ class Term(object):
         except IndexError:
             return None
 
-    def load_programme(self, conn, include_attendance = False):
+    def load_programme(self, conn, include_attendance=False):
         ''' Loads the programme for the term. '''
         data = conn.download('/ext/programme/?action=getProgrammeSummary&sectionid=%s&termid=%s' %
                              (self.section.section_id, self.term_id))
@@ -217,8 +217,10 @@ class Term(object):
         self.programme_loaded = 1
 
         if include_attendance:
-            meetings = list([(meeting.date.strftime('%Y-%m-%d'), meeting) for meeting in self.programme])
-            data = conn.download('/ext/members/attendance/?action=get&sectionid=%s&termid=%s' % (self.section.section_id, self.term_id))
+            meetings = list([(meeting.date.strftime('%Y-%m-%d'), meeting)
+                             for meeting in self.programme])
+            data = conn.download('/ext/members/attendance/?action=get&sectionid=%s&termid=%s' %
+                                 (self.section.section_id, self.term_id))
             for rec in data['items']:
                 member = Member(rec)
                 for meeting in meetings:
@@ -534,13 +536,13 @@ class Member(object):
         try:
             self.badges = [BadgeLink(badge) for badge in source['badges']]
         except KeyError:
-            print 'No bades'
-
+            pass
 
     def __str__(self):
         return '%s, %s [%s]' % (self.last_name,
                                 self.first_name,
                                 (self.patrol + ' ' + self.role).strip())
+
 
 class BadgeLink(object):
     def __init__(self, source):
@@ -548,3 +550,30 @@ class BadgeLink(object):
         self.awarded = source['awarded'] == '1'
         self.picture = source['picture']
         self.name = source['badge']
+
+
+class AwardScheme(object):
+
+    def __init__(self, settings_path):
+        self.badges = []
+        with open(settings_path) as f:
+            data = json.load(f)
+            for badge in data['badges']:
+                self.badges.append(AwardSchemeBadge(badge))
+
+
+class AwardSchemeBadge(object):
+
+    def __init__(self, data):
+        self.name = data['name']
+        self.badge = None
+        self.parts = []
+        for part in data['parts']:
+            self.parts.append(AwardSchemePart(part))
+
+
+class AwardSchemePart(object):
+
+    def __init__(self, data):
+        self.name = data['name']
+        self.id = data['id']
