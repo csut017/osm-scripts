@@ -1,13 +1,9 @@
-import os
 import sys
 
 from datetime import date
 from docx import Document
 from docx.shared import Cm
 from osm import AwardScheme, Connection, Manager
-
-import matplotlib.pyplot as plt
-
 
 class ReportGenerator(object):
 
@@ -24,8 +20,6 @@ class ReportGenerator(object):
     def _initialise(self):
         self._mgr = Manager()
         self._mgr.load(self._conn)
-        if not os.path.exists('temp_images'):
-            os.makedirs('temp_images')
 
     def run(self):
         print 'Connecting to OSM...'
@@ -48,7 +42,7 @@ class ReportGenerator(object):
         print '-> Loaded badges'
 
         print 'Generating report...'
-        filename = ensureExtension(sys.argv[2]+'-Badge Progress', '.docx')
+        filename = ensureExtension(sys.argv[2]+'-Badge Audit', '.docx')
         document = Document()
         self._generate_header_footer(document)
         self._generate_report(scheme, document, badge_map)
@@ -97,32 +91,45 @@ class ReportGenerator(object):
         section.footer.paragraphs[0].text = 'Generated ' + now.strftime('%d %B %Y')
 
     def _generate_report(self, scheme, document, badge_map):
+        items = {}
         for badge in scheme.badges:
-            paragraph = document.add_paragraph(badge.name)
-            paragraph.style = document.styles['Heading 1']
-            counts, labels = [], []
             for part in badge.parts:
-                progress = 0
                 part.badge = badge_map[part.id]
                 part.badge.load_progress(self._conn)
+                part_map = dict((p.part_id, p.name.strip().lower()) for p in part.badge.parts)
                 print '-> Loaded "%s"...' % (part.badge.name,)
+
                 for person in part.badge.progress:
-                    progress += len(person.parts)
+                    name = person.firstname + ' ' + person.lastname
+                    for p_id, activity in person.parts.items():
+                        p_name = part_map[p_id]
 
-                mean = progress * 100 / len(part.badge.progress)
-                completion = mean / len(part.badge.parts)
-                labels.append(part.name)
-                counts.append(completion)
+                        try:
+                            members = items[p_name]
+                        except KeyError:
+                            members = {}
+                            items[p_name] = members
+
+                        try:
+                            activities = members[name]                            
+                        except KeyError:
+                            activities = []
+                            members[name] = activities
+                        activities.append(activity + ' [' + badge.name + ']')
             
-            fig, ax = plt.subplots(1, 1, figsize=(5, len(badge.parts)))
-            ax.set_xlim(0, 100)
-            ax.set_xlabel('Percentage completed')
-            ax.barh(labels, counts)
-            badge_path = os.path.join('temp_images', badge.name + '.png')
-            fig.savefig(badge_path, bbox_inches='tight', dpi=300)
-            document.add_picture(badge_path, width=Cm(16))
-            print '-> Generated "%s"...' % (badge.name,)
-
+            print '-> Processed "%s"...' % (badge.name,)
+        
+        print '-> Generating final audit'
+        for item in sorted(items.keys()):
+            paragraph = document.add_paragraph(item)
+            paragraph.style = document.styles['Heading 1']
+            members = items[item]
+            for member in sorted(members.keys()):
+                paragraph = document.add_paragraph(member.title())
+                paragraph.style = document.styles['Heading 2']
+                for activity in sorted(members[member]):
+                    document.add_paragraph(activity)
+            print '-> Completed "%s"...' % (item,)
 
 def ensureExtension(filename, extension):
     return filename if filename.lower().endswith(extension) else filename + extension

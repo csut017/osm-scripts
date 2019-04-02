@@ -4,3 +4,4 @@ secret.json
 *.xlsx
 *.docx
 badge_images/*.png
+temp_images/*.png
