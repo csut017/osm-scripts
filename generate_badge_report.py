@@ -1,6 +1,7 @@
 '''
-This script generates a report of which badges each Cub Scout has.
+This script generates a report of which badges each Scout has.
 '''
+
 import os
 import sys
 

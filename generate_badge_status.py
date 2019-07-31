@@ -1,3 +1,7 @@
+'''
+This script generates an Excel spreadsheet of where the division is for each requirement.
+'''
+
 import os
 import sys
 
@@ -43,7 +47,7 @@ class ReportGenerator(object):
         report = self._term.load_badges_by_person(self._conn)
 
         print 'Generating report...'
-        filename = ensureExtension(sys.argv[2]+'-Badge Report', '.docx')
+        filename = ensureExtension(sys.argv[2]+'-Badge Status', '.xlsx')
         workbook = xlsxwriter.Workbook(filename)
         self._generate_report(report, workbook)
 

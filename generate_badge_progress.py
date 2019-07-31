@@ -1,5 +1,5 @@
 '''
-This script generates an overall progress report of where the pack is at for the award scheme badges.
+This script generates an overall progress report of where the division is at for the award scheme badges.
 '''
 
 import os
