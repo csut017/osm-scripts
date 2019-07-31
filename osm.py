@@ -231,6 +231,8 @@ class Term(object):
                         pass
             self.programme_loaded = 2
 
+        return self.programme
+
     def load_members(self, conn):
         ''' Loads the current members in the term. '''
         data = {
