@@ -31,9 +31,11 @@ class ReportGenerator(object):
             return
 
         self._set_term(sys.argv[1:3])
+        if self._term is None:
+            return
 
         print 'Retrieving badge data...'
-        scheme = AwardScheme('award.json')
+        scheme = AwardScheme(self._section.name + '-award.json')
         print '-> Loaded award scheme definition'
         self._term.load_badges(self._conn)
         badge_map = {}
@@ -47,17 +49,17 @@ class ReportGenerator(object):
         self._generate_header_footer(document)
         self._generate_report(scheme, document, badge_map)
 
-        print 'Saving...'
+        print 'Saving to %s...' % (filename, )
         document.save(filename)
 
         print 'Done'
 
     def _set_term(self, args):
-        term = args[0]
+        term_name = args[0]
         self._set_section(args[1:])
 
         print 'Setting term...'
-        if term == 'current':
+        if term_name == 'current':
             term = self._section.current_term()
             if term is None:
                 print '-> Currently not in a term'
@@ -66,14 +68,14 @@ class ReportGenerator(object):
                 self._term = term
                 print '-> Term set to %s' % (str(term), )
                 return
-
+        
         for term in self._section.terms:
-            if term.name == term:
+            if term.name == term_name:
                 self._term = term
                 print '-> Term set to %s' % (str(term), )
                 return
             
-        print '-> Unknown term: %s' % (term, )
+        print '-> Unknown term: %s' % (term_name, )
 
     def _set_section(self, args):
         print 'Setting section...'

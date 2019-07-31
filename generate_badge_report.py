@@ -1,3 +1,6 @@
+'''
+This script generates a report of which badges each Cub Scout has.
+'''
 import os
 import sys
 
@@ -30,15 +33,17 @@ class ReportGenerator(object):
             os.makedirs('temp_images')
 
     def run(self):
-        print 'Connecting to OSM...'
-        self._connect()
-        self._initialise()
-
         if len(sys.argv) < 3:
             print 'ERROR: term and section have not been set! '
             return
 
+        print 'Connecting to OSM...'
+        self._connect()
+        self._initialise()
+
         self._set_term(sys.argv[1:3])
+        if self._term is None:
+            return
 
         print 'Retrieving badge report...'
         report = self._term.load_badges_by_person(self._conn)
@@ -48,17 +53,17 @@ class ReportGenerator(object):
         document = Document()
         self._generate_report(report, document)
 
-        print 'Saving...'
+        print 'Saving to %s...' % (filename, )
         document.save(filename)
 
         print 'Done'
 
     def _set_term(self, args):
-        term = args[0]
+        term_name = args[0]
         self._set_section(args[1:])
 
         print 'Setting term...'
-        if term == 'current':
+        if term_name == 'current':
             term = self._section.current_term()
             if term is None:
                 print '-> Currently not in a term'
@@ -67,14 +72,14 @@ class ReportGenerator(object):
                 self._term = term
                 print '-> Term set to %s' % (str(term), )
                 return
-
+        
         for term in self._section.terms:
-            if term.name == term:
+            if term.name == term_name:
                 self._term = term
                 print '-> Term set to %s' % (str(term), )
                 return
             
-        print '-> Unknown term: %s' % (term, )
+        print '-> Unknown term: %s' % (term_name, )
 
     def _set_section(self, args):
         print 'Setting section...'
@@ -121,7 +126,8 @@ class ReportGenerator(object):
             cells[0].width = Cm(5)
             cells[1].width = Cm(21)
             for badge in person.badges:
-                badge_path = os.path.join('badge_images', os.path.basename(badge.picture))
+                _, file_extension = os.path.splitext(badge.picture)
+                badge_path = os.path.join('badge_images', badge.name + file_extension)
                 if not os.path.exists(badge_path):
                     print '...retrieving badge image for %s...' % (badge.name,)
                     self._conn.download_binary(badge.picture, badge_path)

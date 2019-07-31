@@ -3,5 +3,5 @@ __pycache__/*.pyc
 secret.json
 *.xlsx
 *.docx
-badge_images/*.png
 temp_images/*.png
+.vscode/ipch/**/*.bin

@@ -331,7 +331,8 @@ class Badge(object):
             ws_name = ws_name[0:27] + '...'
         worksheet = workbook.add_worksheet(ws_name)
         bold = workbook.add_format({'bold': True, 'font_size': 16})
-        worksheet.merge_range(0, 0, 0, len(self.parts), self.name, bold)
+        if len(self.parts) > 1:
+            worksheet.merge_range(0, 0, 0, len(self.parts), self.name, bold)
         bold = workbook.add_format({'bold': True})
         worksheet.write('A2', 'Name', bold)
         col = 1

@@ -146,11 +146,11 @@ class ProgrammeManager(object):
             print 'Current term is %s' % (str(self._term), )
             return
 
-        term = args[0]
+        term_name = args[0]
         if len(args) > 1:
             self._set_section(args[1:])
 
-        if term == 'current':
+        if term_name == 'current':
             term = self._section.current_term()
             if term is None:
                 print 'Currently not in a term'
@@ -161,12 +161,12 @@ class ProgrammeManager(object):
                 return
 
         for term in self._section.terms:
-            if term.name == term:
+            if term.name == term_name:
                 self._term = term
                 print 'Term set to %s' % (str(term), )
                 return
             
-        print 'Unknown term: %s' % (term, )
+        print 'Unknown term: %s' % (term_name, )
 
     def _list_members(self, args):
         if self._term is None:
