@@ -1,3 +1,7 @@
+'''
+This script generates an audit report of which items each member has completed for the award scheme.
+'''
+
 import sys
 
 from datetime import date
@@ -93,7 +97,7 @@ class ReportGenerator(object):
         section.footer.paragraphs[0].text = 'Generated ' + now.strftime('%d %B %Y')
 
     def _generate_report(self, scheme, document, badge_map):
-        items = {}
+        members = {}
         for badge in scheme.badges:
             for part in badge.parts:
                 part.badge = badge_map[part.id]
@@ -107,31 +111,31 @@ class ReportGenerator(object):
                         p_name = part_map[p_id]
 
                         try:
-                            members = items[p_name]
+                            items = members[name]
                         except KeyError:
-                            members = {}
-                            items[p_name] = members
+                            items = {}
+                            members[name] = items
 
                         try:
-                            activities = members[name]                            
+                            activities = items[p_name]                            
                         except KeyError:
                             activities = []
-                            members[name] = activities
+                            items[p_name] = activities
                         activities.append(activity + ' [' + badge.name + ']')
             
             print '-> Processed "%s"...' % (badge.name,)
         
         print '-> Generating final audit'
-        for item in sorted(items.keys()):
-            paragraph = document.add_paragraph(item)
+        for member in sorted(members.keys()):
+            paragraph = document.add_paragraph(member.title())
             paragraph.style = document.styles['Heading 1']
-            members = items[item]
-            for member in sorted(members.keys()):
-                paragraph = document.add_paragraph(member.title())
+            items = members[member]
+            for item in sorted(items.keys()):
+                paragraph = document.add_paragraph(item)
                 paragraph.style = document.styles['Heading 2']
-                for activity in sorted(members[member]):
+                for activity in sorted(items[item]):
                     document.add_paragraph(activity)
-            print '-> Completed "%s"...' % (item,)
+            print '-> Completed "%s"...' % (member,)
 
 def ensureExtension(filename, extension):
     return filename if filename.lower().endswith(extension) else filename + extension
