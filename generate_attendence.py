@@ -44,7 +44,7 @@ class ReportGenerator(object):
             return
 
         print 'Retrieving term programme...'
-        report = self._term.load_programme(self._conn, True)
+        report = self._term.load_programme(self._conn, include_attendance=True)
 
         print 'Generating report...'
         filename = ensureExtension(sys.argv[2]+'-Attendence', '.xlsx')

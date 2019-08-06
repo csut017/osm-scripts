@@ -233,7 +233,7 @@ class Term(object):
 
         return self.programme
 
-    def load_members(self, conn):
+    def load_members(self, conn, include_data=False):
         ''' Loads the current members in the term. '''
         data = {
             'section_id': self.section.section_id,
@@ -242,10 +242,32 @@ class Term(object):
         data = conn.upload(
             '/ext/members/contact/grid/?action=getMembers', data)
         self.members = []
+
+        data_structure = []
+        if include_data:
+            for grp in data['meta']['structure']:
+                grp_def = CustomGroup(grp['identifier'], str(grp['group_id']))
+                data_structure.append(grp_def)
+                for col in grp['columns']:
+                    col_def = CustomColumn(col['varname'], str(col['column_id']))
+                    grp_def.columns.append(col_def)
+
         for _, rec in data['data'].items():
             member = Member(rec)
+            if include_data:
+                for grp in data_structure:
+                    grp_data = rec['custom_data'][grp.id]
+                    custom_data = {}
+                    member.custom_data[grp.name] = custom_data
+                    if not grp_data is None:
+                        for col in grp.columns:
+                            col_data = grp_data[col.id]
+                            if not col_data is None:
+                                custom_data[col.name] = col_data
+
             self.members.append(member)
         self.members_loaded = True
+        return self.members
 
     def import_programme(self, filename, conn):
         ''' Imports a programme from a CSV file.
@@ -541,6 +563,8 @@ class Member(object):
         except KeyError:
             pass
 
+        self.custom_data = {}
+
     def __str__(self):
         return '%s, %s [%s]' % (self.last_name,
                                 self.first_name,
@@ -580,3 +604,14 @@ class AwardSchemePart(object):
     def __init__(self, data):
         self.name = data['name']
         self.id = data['id']
+
+class CustomGroup(object):
+    def __init__(self, name, id):
+        self.name = name
+        self.id = id
+        self.columns = []
+
+class CustomColumn(object):
+    def __init__(self, name, id):
+        self.name = name
+        self.id = id
