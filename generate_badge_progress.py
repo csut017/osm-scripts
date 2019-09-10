@@ -34,10 +34,10 @@ class ReportGenerator(object):
     def run(self):
 
         if len(sys.argv) < 3:
-            print 'ERROR: term and section have not been set! '
+            print('ERROR: term and section have not been set! ')
             return
 
-        print 'Connecting to OSM...'
+        print('Connecting to OSM...')
         self._connect()
         self._initialise()
 
@@ -45,57 +45,57 @@ class ReportGenerator(object):
         if self._term is None:
             return
 
-        print 'Retrieving badge data...'
+        print('Retrieving badge data...')
         scheme = AwardScheme(self._section.name + '-award.json')
-        print '-> Loaded award scheme definition'
+        print('-> Loaded award scheme definition')
         self._term.load_badges(self._conn)
         badge_map = {}
         for badge in self._term.badges:
             badge_map[badge.badge_id] = badge
-        print '-> Loaded badges'
+        print('-> Loaded badges')
 
-        print 'Generating report...'
+        print('Generating report...')
         filename = ensureExtension(sys.argv[2]+'-Badge Progress', '.docx')
         document = Document()
         self._generate_header_footer(document)
         self._generate_report(scheme, document, badge_map)
 
-        print 'Saving to %s...' % (filename, )
+        print('Saving to %s...' % (filename, ))
         document.save(filename)
 
-        print 'Done'
+        print('Done')
 
     def _set_term(self, args):
         term_name = args[0]
         self._set_section(args[1:])
 
-        print 'Setting term...'
+        print('Setting term...')
         if term_name == 'current':
             term = self._section.current_term()
             if term is None:
-                print '-> Currently not in a term'
+                print('-> Currently not in a term')
                 return
             else:
                 self._term = term
-                print '-> Term set to %s' % (str(term), )
+                print('-> Term set to %s' % (str(term), ))
                 return
         
         for term in self._section.terms:
             if term.name == term_name:
                 self._term = term
-                print '-> Term set to %s' % (str(term), )
+                print('-> Term set to %s' % (str(term), ))
                 return
             
-        print '-> Unknown term: %s' % (term_name, )
+        print('-> Unknown term: %s' % (term_name, ))
 
     def _set_section(self, args):
-        print 'Setting section...'
+        print('Setting section...')
         section = self._mgr.find_section(args[0])
         if section is None:
-            print '-> Unknown section: %s' % (args[0], )
+            print('-> Unknown section: %s' % (args[0], ))
         else:
             self._section = section
-            print '-> Section set to %s' % (str(section), )
+            print('-> Section set to %s' % (str(section), ))
     
     def _generate_header_footer(self, document):
         now = date.today()
@@ -112,7 +112,7 @@ class ReportGenerator(object):
                 progress = 0
                 part.badge = badge_map[part.id]
                 part.badge.load_progress(self._conn)
-                print '-> Loaded "%s"...' % (part.badge.name,)
+                print('-> Loaded "%s"...' % (part.badge.name,))
                 for person in part.badge.progress:
                     progress += len(person.parts)
 
@@ -128,7 +128,7 @@ class ReportGenerator(object):
             badge_path = os.path.join('temp_images', badge.name + '.png')
             fig.savefig(badge_path, bbox_inches='tight', dpi=300)
             document.add_picture(badge_path, width=Cm(16))
-            print '-> Generated "%s"...' % (badge.name,)
+            print('-> Generated "%s"...' % (badge.name,))
 
 
 def ensureExtension(filename, extension):

@@ -12,8 +12,6 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.shared import Cm, Pt
 from osm import AwardScheme, Connection, Manager
 
-import matplotlib.pyplot as plt
-
 
 class ReportGenerator(object):
 
@@ -35,10 +33,10 @@ class ReportGenerator(object):
 
     def run(self):
         if len(sys.argv) < 3:
-            print 'ERROR: term and section have not been set! '
+            print('ERROR: term and section have not been set! ')
             return
 
-        print 'Connecting to OSM...'
+        print('Connecting to OSM...')
         self._connect()
         self._initialise()
 
@@ -46,53 +44,53 @@ class ReportGenerator(object):
         if self._term is None:
             return
 
-        print 'Retrieving term programme...'
+        print('Retrieving term programme...')
         programme = self._term.load_programme(self._conn)
 
-        print 'Retrieving members...'
+        print('Retrieving members...')
         members = self._term.load_members(self._conn, include_data=True)
 
-        print 'Generating report...'
+        print('Generating report...')
         filename = ensureExtension(sys.argv[2]+'-Signin', '.docx')
         document = Document()
         self._generate_report(programme, members, document)
 
-        print 'Saving to %s...' % (filename, )
+        print('Saving to %s...' % (filename, ))
         document.save(filename)
 
-        print 'Done'
+        print('Done')
 
     def _set_term(self, args):
         term_name = args[0]
         self._set_section(args[1:])
 
-        print 'Setting term...'
+        print('Setting term...')
         if term_name == 'current':
             term = self._section.current_term()
             if term is None:
-                print '-> Currently not in a term'
+                print('-> Currently not in a term')
                 return
             else:
                 self._term = term
-                print '-> Term set to %s' % (str(term), )
+                print('-> Term set to %s' % (str(term), ))
                 return
         
         for term in self._section.terms:
             if term.name == term_name:
                 self._term = term
-                print '-> Term set to %s' % (str(term), )
+                print('-> Term set to %s' % (str(term), ))
                 return
             
-        print '-> Unknown term: %s' % (term_name, )
+        print('-> Unknown term: %s' % (term_name, ))
 
     def _set_section(self, args):
-        print 'Setting section...'
+        print('Setting section...')
         section = self._mgr.find_section(args[0])
         if section is None:
-            print '-> Unknown section: %s' % (args[0], )
+            print('-> Unknown section: %s' % (args[0], ))
         else:
             self._section = section
-            print '-> Section set to %s' % (str(section), )
+            print('-> Section set to %s' % (str(section), ))
     
     def _generate_report(self, programme, members, document):
         headingStyle = document.styles.add_style('TableHeading', WD_STYLE_TYPE.PARAGRAPH)
@@ -157,7 +155,7 @@ class ReportGenerator(object):
         report_data.sort(key=lambda r:r[0])
         for person in report_data:
             cells = table.add_row().cells
-            print '...adding row for %s...' % (person[0], )
+            print('...adding row for %s...' % (person[0], ))
             cells[0].text = str(count) + '.'
             cells[1].text = person[0]
             cells[4].text = person[1]
