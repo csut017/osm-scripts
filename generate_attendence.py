@@ -25,8 +25,6 @@ class ReportGenerator(object):
     def _initialise(self):
         self._mgr = Manager()
         self._mgr.load(self._conn)
-        if not os.path.exists('temp_images'):
-            os.makedirs('temp_images')
 
     def run(self):
         print('Connecting to OSM...')
