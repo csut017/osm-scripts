@@ -1,57 +1,71 @@
 {
     "badges": [{
         "name": "Cub Badge",
+        "complete": "99_0",
         "parts": [{
             "name": "Badge",
             "id": "99_0"
         }]
     }, {
-        "name": "Bronze",
+        "name": "Bronze Cub Award",
+        "complete": "140_0",
         "parts": [{
             "name": "Outdoors Cornerstone",
-            "id": "136_0"
+            "id": "136_0",
+            "group": true
         }, {
             "name": "Community Cornerstone",
-            "id": "137_0"
+            "id": "137_0",
+            "group": true
         }, {
             "name": "Personal Development Cornerstone",
-            "id": "138_0"
+            "id": "138_0",
+            "group": true
         }, {
             "name": "New Experiences Cornerstone",
             "id": "139_0"
         }]
     }, {
-        "name": "Silver",
+        "name": "Silver Cub Award",
+        "complete": "147_0",
         "parts": [{
             "name": "Outdoors Cornerstone",
-            "id": "142_0"
+            "id": "142_0",
+            "group": true
         }, {
             "name": "Community Cornerstone",
-            "id": "143_0"
+            "id": "143_0",
+            "group": true
         }, {
             "name": "Personal Development Cornerstone",
-            "id": "144_0"
+            "id": "144_0",
+            "group": true
         }, {
             "name": "New Experiences Cornerstone",
             "id": "145_0"
         }]
     }, {
-        "name": "Gold",
+        "name": "Gold Cub Award",
+        "complete": "152_0",
         "parts": [{
             "name": "Outdoors Cornerstone",
-            "id": "148_0"
+            "id": "148_0",
+            "group": true
         }, {
             "name": "Community Cornerstone",
-            "id": "149_0"
+            "id": "149_0",
+            "group": true
         }, {
             "name": "Personal Development Cornerstone",
-            "id": "150_0"
+            "id": "150_0",
+            "group": true
         }, {
             "name": "New Experiences Cornerstone",
             "id": "151_0"
         }]
     }, {
         "name": "Scout Badge",
+        "complete": "1_3",
         "parts": [{
             "name": "Badge",
             "id": "1_3"

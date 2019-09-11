@@ -401,6 +401,7 @@ class BadgeProgress(object):
         self.firstname = source['firstname']
         self.lastname = source['lastname']
         self.completed = source['completed'] == '1'
+        self.member_id = source['scoutid']
         self.parts = {}
         for part in badge.parts:
             part_id = part.part_id
@@ -593,10 +594,17 @@ class AwardSchemeBadge(object):
 
     def __init__(self, data):
         self.name = data['name']
+        try:
+            self.complete_id = data['complete']
+        except KeyError:
+            self.complete_id = None
         self.badge = None
         self.parts = []
+        self.group = False
         for part in data['parts']:
-            self.parts.append(AwardSchemePart(part))
+            new_part = AwardSchemePart(part)
+            self.parts.append(new_part)
+            self.group = self.group or new_part.group
 
 
 class AwardSchemePart(object):
@@ -604,6 +612,10 @@ class AwardSchemePart(object):
     def __init__(self, data):
         self.name = data['name']
         self.id = data['id']
+        try:
+            self.group = data['group']
+        except KeyError:
+            self.group = False
 
 class CustomGroup(object):
     def __init__(self, name, id):
