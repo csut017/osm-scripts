@@ -578,6 +578,7 @@ class BadgeLink(object):
         self.awarded = source['awarded'] == '1'
         self.picture = source['picture']
         self.name = source['badge']
+        self.badge_id = source['badge_id']
 
 
 class AwardScheme(object):
@@ -627,3 +628,46 @@ class CustomColumn(object):
     def __init__(self, name, id):
         self.name = name
         self.id = id
+
+
+class BadgeOrder(object):
+    def __init__(self, badges_path):
+        self._badges = {}
+        try:
+            with open(badges_path, 'r+') as f:
+                data = json.load(f)
+        except IOError:
+            data = {}
+            
+        if 'badges' in data:
+            self._badges = { b['id'] : b for b in data['badges'] }
+        
+    def save(self, badges_path):
+        badges = self._badges.values()
+        badges.sort(key=self._sort_by_order)
+        data = {
+            'badges': badges
+        }
+        with open(badges_path, 'w+') as f:
+            json.dump(data, f, indent=4)
+
+    def _sort_by_order(self, badge):
+        return badge['order']
+
+    def get_order(self, id, name):
+        try:
+            return self._badges[id]['order']
+        except KeyError:
+            new_order = len(self._badges) + 1
+            self._badges[id] = {
+                'id': id,
+                'name': name,
+                'order': new_order
+            }
+            return new_order
+
+    def remove_with(self, id):
+        try:
+            return self._badges[id]['removeWith']
+        except KeyError:
+            return ''

@@ -10,8 +10,9 @@ from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.style import WD_STYLE_TYPE
 from docx.shared import Cm, Pt
-from osm import AwardScheme, Connection, Manager
-
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from osm import AwardScheme, Connection, Manager, BadgeOrder
 
 class ReportGenerator(object):
 
@@ -20,6 +21,7 @@ class ReportGenerator(object):
         self._mgr = None
         self._section = None
         self._term = None
+        self._badge_order = None
 
     def _connect(self):
         self._conn = Connection('secret.json')
@@ -42,6 +44,9 @@ class ReportGenerator(object):
         if self._term is None:
             return
 
+        print('Retrieving badge order...')
+        self._badge_order = BadgeOrder('report-order.json')
+
         print('Retrieving badge report...')
         report = self._term.load_badges_by_person(self._conn)
 
@@ -49,6 +54,7 @@ class ReportGenerator(object):
         filename = ensureExtension(sys.argv[2]+'-Badge Report', '.docx')
         document = Document()
         self._generate_report(report, document)
+        self._badge_order.save('report-order.json')
 
         print('Saving to %s...' % (filename, ))
         document.save(filename)
@@ -98,6 +104,8 @@ class ReportGenerator(object):
         section.page_height = new_height
         section.left_margin = Cm(1)
         section.right_margin = Cm(1)
+        section.top_margin = Cm(1.5)
+        section.bottom_margin = Cm(1.5)
 
         section.header.paragraphs[0].text = 'Badge Report'
         now = date.today()
@@ -112,6 +120,7 @@ class ReportGenerator(object):
         cells[1].width = Cm(21)
         clearFormatting(cells[0].paragraphs[0], headingStyle)
         clearFormatting(cells[1].paragraphs[0], headingStyle)
+        set_repeat_table_header(table.rows[0])
         for person in report:
             cells = table.add_row().cells
             name = '%s %s' % (person.first_name, person.last_name)
@@ -120,9 +129,14 @@ class ReportGenerator(object):
             clearFormatting(cells[0].paragraphs[0])
             para = cells[1].paragraphs[0]
             clearFormatting(para)
-            cells[0].width = Cm(5)
-            cells[1].width = Cm(21)
+            cells[0].width = Cm(4)
+            cells[1].width = Cm(22)
+            person.badges.sort(key=self._sort_order)
+            all_badges = { b.badge_id : True for b in person.badges if b.completed }
             for badge in person.badges:
+                if self._badge_order.remove_with(badge.badge_id) in all_badges:
+                    continue
+
                 _, file_extension = os.path.splitext(badge.picture)
                 badge_path = os.path.join('badge_images', badge.name + file_extension)
                 if not os.path.exists(badge_path):
@@ -131,16 +145,37 @@ class ReportGenerator(object):
                 if badge.completed:
                     para.add_run().add_picture(badge_path, width = Cm(2))
                     para.add_run(' ')
+        preventDocumentBreak(document)
 
+    def _sort_order(self, badge):
+        return self._badge_order.get_order(badge.badge_id, badge.name)
 
 def ensureExtension(filename, extension):
     return filename if filename.lower().endswith(extension) else filename + extension
 
 def clearFormatting(paragraph, style=None):
-    paragraph.paragraph_format.space_before = Pt(0)
-    paragraph.paragraph_format.space_after = Pt(0)
+    paragraph.paragraph_format.space_before = Pt(3)
+    paragraph.paragraph_format.space_after = Pt(3)
     if style is not None:
         paragraph.style = style
+
+def set_repeat_table_header(row):
+    """ set repeat table row on every new page
+    """
+    tr = row._tr
+    trPr = tr.get_or_add_trPr()
+    tblHeader = OxmlElement('w:tblHeader')
+    tblHeader.set(qn('w:val'), "true")
+    trPr.append(tblHeader)
+    return row
+
+def preventDocumentBreak(document):
+  tags = document.element.xpath('//w:tr')
+  rows = len(tags)
+  for row in range(0,rows):
+    tag = tags[row]
+    child = OxmlElement('w:cantSplit')
+    tag.append(child)
 
 if __name__ == "__main__":
     mgr = ReportGenerator()
