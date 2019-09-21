@@ -44,8 +44,9 @@ class ReportGenerator(object):
         if self._term is None:
             return
 
-        print('Retrieving badge order...')
-        self._badge_order = BadgeOrder('report-order.json')
+        order_path = 'report-order-' + sys.argv[2] + '.json'
+        print('Retrieving badge order from ' + order_path + '...')
+        self._badge_order = BadgeOrder(order_path)
 
         print('Retrieving badge report...')
         report = self._term.load_badges_by_person(self._conn)
@@ -54,7 +55,7 @@ class ReportGenerator(object):
         filename = ensureExtension(sys.argv[2]+'-Badge Report', '.docx')
         document = Document()
         self._generate_report(report, document)
-        self._badge_order.save('report-order.json')
+        self._badge_order.save(order_path)
 
         print('Saving to %s...' % (filename, ))
         document.save(filename)
