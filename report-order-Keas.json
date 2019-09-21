@@ -1,0 +1,134 @@
+{
+    "badges": [
+        {
+            "order": 1, 
+            "name": "Kea Woggle (Woggles)", 
+            "id": "277"
+        }, 
+        {
+            "order": 2, 
+            "name": "Kea Badge (Award Scheme)", 
+            "id": "104"
+        }, 
+        {
+            "order": 3, 
+            "name": "Bronze Kea Award (Award Scheme)", 
+            "id": "105"
+        }, 
+        {
+            "order": 4, 
+            "name": "Silver Kea Award (Award Scheme)", 
+            "id": "123"
+        }, 
+        {
+            "order": 5, 
+            "name": "Gold Kea Award (Award Scheme)", 
+            "id": "132"
+        }, 
+        {
+            "order": 6, 
+            "name": "Cub Badge (Award Scheme)", 
+            "id": "99"
+        }, 
+        {
+            "order": 7, 
+            "name": "Aviator Kea (Personal Development)", 
+            "id": "129"
+        }, 
+        {
+            "order": 8, 
+            "name": "Be Sun Smart - Kea (Activity)", 
+            "id": "250"
+        }, 
+        {
+            "order": 9, 
+            "name": "Caring Kea (Personal Development)", 
+            "id": "125"
+        }, 
+        {
+            "order": 10, 
+            "name": "Conservation Kea (Personal Development)", 
+            "id": "124"
+        }, 
+        {
+            "order": 11, 
+            "name": "Healthy Kea (Personal Development)", 
+            "id": "128"
+        }, 
+        {
+            "order": 12, 
+            "name": "Helpful Kea (Personal Development)", 
+            "id": "127"
+        }, 
+        {
+            "order": 13, 
+            "name": "Keen Kea (Personal Development)", 
+            "id": "130"
+        }, 
+        {
+            "order": 14, 
+            "name": "Road Safety Kea (Personal Development)", 
+            "id": "133"
+        }, 
+        {
+            "order": 15, 
+            "name": "Scientific Kea (Personal Development)", 
+            "id": "134"
+        }, 
+        {
+            "order": 16, 
+            "name": "Techno Kea (Personal Development)", 
+            "id": "126"
+        }, 
+        {
+            "order": 17, 
+            "name": "Water Safety Kea (Personal Development)", 
+            "id": "135"
+        }, 
+        {
+            "order": 18, 
+            "name": "World Scout Environment  (under 11) (Royal Oak)", 
+            "id": "1389"
+        }, 
+        {
+            "order": 19, 
+            "id": "993", 
+            "name": "ANZAC Day 2017 (National Event)"
+        }, 
+        {
+            "order": 20, 
+            "id": "1268", 
+            "name": "Anzac Day Parade 2018 (National Event)"
+        }, 
+        {
+            "order": 21, 
+            "id": "1549", 
+            "name": "ANZAC Day 2019 (National Event)"
+        }, 
+        {
+            "order": 22, 
+            "id": "740", 
+            "name": "National Keas in Action - Hiking Badge (Purple Border) (National Event)"
+        }, 
+        {
+            "order": 23, 
+            "id": "1366", 
+            "name": "Scout Scarf Day (National Event)"
+        }, 
+        {
+            "order": 24, 
+            "id": "1687", 
+            "name": "Scarf Day 2019 (National Event)"
+        }, 
+        {
+            "order": 25, 
+            "id": "1531", 
+            "name": "JOTT 2019 Day Hike (World Events)"
+        }, 
+        {
+            "order": 26, 
+            "id": "1400", 
+            "name": "National Kea 40th Birthday Badge"
+        }
+    ]
+}
