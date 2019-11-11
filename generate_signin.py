@@ -44,14 +44,21 @@ class ReportGenerator(object):
 
         print('Retrieving term programme...')
         programme = self._term.load_programme(self._conn)
+        now = date.today()
+        night = programme[0]
+        for day in programme:
+            night = day
+            if day.date > now:
+                break
 
         print('Retrieving members...')
         members = self._term.load_members(self._conn, include_data=True)
 
         print('Generating report...')
+        template = ensureExtension(sys.argv[2]+'-Signin-Template', '.docx')
         filename = ensureExtension(sys.argv[2]+'-Signin', '.docx')
-        document = Document()
-        self._generate_report(programme, members, document)
+        document = Document(template)
+        self._generate_report(programme, members, document, night)
 
         print('Saving to %s...' % (filename, ))
         document.save(filename)
@@ -90,41 +97,15 @@ class ReportGenerator(object):
             self._section = section
             print('-> Section set to %s' % (str(section), ))
     
-    def _generate_report(self, programme, members, document):
-        headingStyle = document.styles.add_style('TableHeading', WD_STYLE_TYPE.PARAGRAPH)
-        headingStyle.font.bold=True
+    def _generate_report(self, programme, members, doc, night):
+        for para in doc.paragraphs:
+            for run in para.runs:
+                if run.text == '{{date}}':
+                    run.text = night.date.strftime('%d %B %Y')
+                if run.text == '{{activity}}':
+                    run.text = night.name
 
-        section = document.sections[0]
-        new_width, new_height = section.page_height, section.page_width
-        section.orientation = WD_ORIENT.PORTRAIT
-        section.page_width = new_width
-        section.page_height = new_height
-        section.left_margin = Cm(1)
-        section.right_margin = Cm(1)
-
-        section.header.paragraphs[0].text = 'Badge Report'
-        now = date.today()
-        section.footer.paragraphs[0].text = 'Generated ' + now.strftime('%d %B %Y')
-        table = document.add_table(rows = 1, cols = 6, style='Table Grid')
-        table.columns[0].width = Cm(5)
-        table.columns[1].width = Cm(21)
-        cells = table.rows[0].cells
-        cells[0].text = ''
-        cells[1].text = 'Name'
-        cells[2].text = 'Sign In'
-        cells[3].text = 'Sign Out'
-        cells[4].text = 'Contact Person'
-        cells[5].text = 'Contact Number'
-        cells[0].width = Cm(1.16)
-        cells[1].width = Cm(4.09)
-        cells[2].width = Cm(3.25)
-        cells[3].width = Cm(3.25)
-        cells[4].width = Cm(4.50)
-        cells[5].width = Cm(3.13)
-        clearFormatting(cells[0].paragraphs[0], headingStyle)
-        clearFormatting(cells[1].paragraphs[0], headingStyle)
-        count = 1
-
+        print '...extracting data'
         report_data = []
         for person in members:
             if person.patrol == 'Leaders':
@@ -140,7 +121,7 @@ class ReportGenerator(object):
                     contact = None
 
             if not contact is None:
-                contact_person = '%s %s' % (contact['first_name'], contact['last_name'])
+                contact_person = '%s %s' % (contact['first_name'].strip(), contact['last_name'].strip())
                 try:
                     contact_number = contact['mobile_phone']
                 except KeyError:
@@ -150,15 +131,17 @@ class ReportGenerator(object):
                         contact_number = ''
             report_data.append([name, contact_person, contact_number])                 
 
+        print '...populating table'
         report_data.sort(key=lambda r:r[0])
+        row = 1
+        table = doc.tables[0]
         for person in report_data:
-            cells = table.add_row().cells
+            cells = table.rows[row].cells
+            row += 1
             print('...adding row for %s...' % (person[0], ))
-            cells[0].text = str(count) + '.'
             cells[1].text = person[0]
             cells[4].text = person[1]
             cells[5].text = person[2]
-            count += 1
 
 
 def ensureExtension(filename, extension):

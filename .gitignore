@@ -2,6 +2,7 @@ __pycache__/*.pyc
 *.pyc
 secret.json
 *.xlsx
-*.docx
 temp_images/*.png
 .vscode/ipch/**/*.bin
+~*.docx
+~*.tmp

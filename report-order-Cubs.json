@@ -1,297 +1,297 @@
 {
     "badges": [
         {
-            "id": "1388", 
             "order": 1, 
-            "name": "Royal Oak Group Badge (Royal Oak)"
+            "name": "Royal Oak Group Badge (Royal Oak)", 
+            "id": "1388"
         }, 
         {
-            "order": 2, 
             "id": "99", 
-            "name": "Cub Badge (Award Scheme)"
+            "name": "Cub Badge (Award Scheme)", 
+            "order": 2
         }, 
         {
-            "order": 3, 
             "id": "240", 
-            "name": "Kea Link Badge"
+            "name": "Kea Link Badge", 
+            "order": 3
         }, 
         {
             "removeWith": "140", 
-            "order": 4, 
             "id": "137", 
-            "name": "Bronze Award Community Cornerstone (Award Scheme Bronze)"
+            "name": "Bronze Award Community Cornerstone (Award Scheme Bronze)", 
+            "order": 4
         }, 
         {
             "removeWith": "140", 
-            "order": 5, 
             "id": "139", 
-            "name": "Bronze Award New Experiences Cornerstone (Award Scheme Bronze)"
+            "name": "Bronze Award New Experiences Cornerstone (Award Scheme Bronze)", 
+            "order": 5
         }, 
         {
             "removeWith": "140", 
-            "order": 6, 
             "id": "136", 
-            "name": "Bronze Award Outdoors Cornerstone (Award Scheme Bronze)"
+            "name": "Bronze Award Outdoors Cornerstone (Award Scheme Bronze)", 
+            "order": 6
         }, 
         {
             "removeWith": "140", 
-            "order": 7, 
             "id": "138", 
-            "name": "Bronze Award Personal Development Cornerstone (Award Scheme Bronze)"
+            "name": "Bronze Award Personal Development Cornerstone (Award Scheme Bronze)", 
+            "order": 7
         }, 
         {
-            "order": 8, 
             "id": "140", 
-            "name": "Bronze Cub Award (Award Scheme Bronze)"
+            "name": "Bronze Cub Award (Award Scheme Bronze)", 
+            "order": 8
         }, 
         {
             "removeWith": "147", 
-            "order": 9, 
             "id": "143", 
-            "name": "Silver Award Community Cornerstone (Award Scheme Silver)"
+            "name": "Silver Award Community Cornerstone (Award Scheme Silver)", 
+            "order": 9
         }, 
         {
             "removeWith": "147", 
-            "order": 10, 
             "id": "145", 
-            "name": "Silver Award New Experiences Cornerstone (Award Scheme Silver)"
+            "name": "Silver Award New Experiences Cornerstone (Award Scheme Silver)", 
+            "order": 10
         }, 
         {
             "removeWith": "147", 
-            "order": 11, 
             "id": "142", 
-            "name": "Silver Award Outdoors Cornerstone (Award Scheme Silver)"
+            "name": "Silver Award Outdoors Cornerstone (Award Scheme Silver)", 
+            "order": 11
         }, 
         {
             "removeWith": "147", 
-            "order": 12, 
             "id": "144", 
-            "name": "Silver Award Personal Development Cornerstone (Award Scheme Silver)"
+            "name": "Silver Award Personal Development Cornerstone (Award Scheme Silver)", 
+            "order": 12
         }, 
         {
-            "order": 13, 
             "id": "147", 
-            "name": "Silver Cub Award (Award Scheme Silver)"
+            "name": "Silver Cub Award (Award Scheme Silver)", 
+            "order": 13
         }, 
         {
             "removeWith": "152", 
-            "order": 14, 
             "id": "149", 
-            "name": "Gold Award Community Cornerstone (Award Scheme Gold)"
+            "name": "Gold Award Community Cornerstone (Award Scheme Gold)", 
+            "order": 14
         }, 
         {
             "removeWith": "152", 
-            "order": 15, 
             "id": "151", 
-            "name": "Gold Award New Experiences Cornerstone (Award Scheme Gold)"
+            "name": "Gold Award New Experiences Cornerstone (Award Scheme Gold)", 
+            "order": 15
         }, 
         {
             "removeWith": "152", 
-            "order": 16, 
             "id": "148", 
-            "name": "Gold Award Outdoors Cornerstone (Award Scheme Gold)"
+            "name": "Gold Award Outdoors Cornerstone (Award Scheme Gold)", 
+            "order": 16
         }, 
         {
             "removeWith": "152", 
-            "order": 17, 
             "id": "150", 
-            "name": "Gold Award Personal Development Cornerstone (Award Scheme Gold)"
+            "name": "Gold Award Personal Development Cornerstone (Award Scheme Gold)", 
+            "order": 17
         }, 
         {
-            "order": 18, 
             "id": "152", 
-            "name": "Gold Cub Award (Award Scheme Gold)"
+            "name": "Gold Cub Award (Award Scheme Gold)", 
+            "order": 18
         }, 
         {
-            "order": 19, 
             "id": "1", 
-            "name": "Scout Badge (Award Scheme)"
+            "name": "Scout Badge (Award Scheme)", 
+            "order": 19
         }, 
         {
-            "order": 20, 
             "id": "101", 
-            "name": "Artist (Personal Development)"
+            "name": "Artist (Personal Development)", 
+            "order": 20
         }, 
         {
             "removeWith": "1479", 
-            "order": 21, 
             "id": "102", 
-            "name": "Athlete - All Stages (Personal Development)"
+            "name": "Athlete - All Stages (Personal Development)", 
+            "order": 21
         }, 
         {
-            "order": 22, 
             "id": "1479", 
-            "name": "Athlete - Stage 1 (Personal Development)"
+            "name": "Athlete - Stage 1 (Personal Development)", 
+            "order": 22
         }, 
         {
-            "order": 23, 
             "id": "1481", 
-            "name": "Athlete - Stage 2 (Personal Development)"
+            "name": "Athlete - Stage 2 (Personal Development)", 
+            "order": 23
         }, 
         {
-            "order": 24, 
             "id": "1482", 
-            "name": "Athlete - Stage 3 (Personal Development)"
+            "name": "Athlete - Stage 3 (Personal Development)", 
+            "order": 24
         }, 
         {
-            "order": 25, 
             "id": "153", 
-            "name": "Book Readers (Personal Development)"
+            "name": "Book Readers (Personal Development)", 
+            "order": 25
         }, 
         {
-            "order": 26, 
             "id": "154", 
-            "name": "Collectors Badge (Personal Development)"
+            "name": "Collectors Badge (Personal Development)", 
+            "order": 26
         }, 
         {
-            "order": 27, 
             "id": "155", 
-            "name": "Computer User (Personal Development)"
+            "name": "Computer User (Personal Development)", 
+            "order": 27
         }, 
         {
-            "order": 28, 
             "id": "156", 
-            "name": "Conservation (Personal Development)"
+            "name": "Conservation (Personal Development)", 
+            "order": 28
         }, 
         {
-            "order": 29, 
             "id": "157", 
-            "name": "Cook (Personal Development)"
+            "name": "Cook (Personal Development)", 
+            "order": 29
         }, 
         {
-            "order": 30, 
             "id": "158", 
-            "name": "Cyclist (Personal Development)"
+            "name": "Cyclist (Personal Development)", 
+            "order": 30
         }, 
         {
-            "order": 31, 
             "id": "159", 
-            "name": "Entertainer (Personal Development)"
+            "name": "Entertainer (Personal Development)", 
+            "order": 31
         }, 
         {
-            "order": 32, 
             "id": "160", 
-            "name": "First Aid (Personal Development)"
+            "name": "First Aid (Personal Development)", 
+            "order": 32
         }, 
         {
-            "order": 33, 
             "id": "161", 
-            "name": "Fishing (Personal Development)"
+            "name": "Fishing (Personal Development)", 
+            "order": 33
         }, 
         {
-            "order": 34, 
             "id": "162", 
-            "name": "Gardening (Personal Development)"
+            "name": "Gardening (Personal Development)", 
+            "order": 34
         }, 
         {
-            "order": 35, 
             "id": "163", 
-            "name": "Hobbies (Personal Development)"
+            "name": "Hobbies (Personal Development)", 
+            "order": 35
         }, 
         {
-            "order": 36, 
             "id": "164", 
-            "name": "Home Help (Personal Development)"
+            "name": "Home Help (Personal Development)", 
+            "order": 36
         }, 
         {
-            "order": 37, 
             "id": "165", 
-            "name": "Faith (Personal Development)"
+            "name": "Faith (Personal Development)", 
+            "order": 37
         }, 
         {
-            "order": 38, 
             "id": "166", 
-            "name": "Pet Keeper (Personal Development)"
+            "name": "Pet Keeper (Personal Development)", 
+            "order": 38
         }, 
         {
-            "order": 39, 
             "id": "167", 
-            "name": "Photographer (Personal Development)"
+            "name": "Photographer (Personal Development)", 
+            "order": 39
         }, 
         {
-            "order": 40, 
             "id": "168", 
-            "name": "Scientist (Personal Development)"
+            "name": "Scientist (Personal Development)", 
+            "order": 40
         }, 
         {
-            "order": 41, 
             "id": "169", 
-            "name": "Sports (Personal Development)"
+            "name": "Sports (Personal Development)", 
+            "order": 41
         }, 
         {
-            "order": 42, 
             "id": "818", 
-            "name": "Swimming Stage 1 (Personal Development)"
+            "name": "Swimming Stage 1 (Personal Development)", 
+            "order": 42
         }, 
         {
-            "order": 43, 
             "id": "819", 
-            "name": "Swimming Stage 2 (Personal Development)"
+            "name": "Swimming Stage 2 (Personal Development)", 
+            "order": 43
         }, 
         {
-            "order": 44, 
             "id": "820", 
-            "name": "Swimming Stage 3 (Personal Development)"
+            "name": "Swimming Stage 3 (Personal Development)", 
+            "order": 44
         }, 
         {
-            "order": 45, 
             "id": "1682", 
-            "name": "10 Badges (Personal Development)"
+            "name": "10 Badges (Personal Development)", 
+            "order": 45
         }, 
         {
-            "id": "1389", 
             "order": 46, 
-            "name": "World Scout Environment  (under 11) (Royal Oak)"
+            "name": "World Scout Environment  (under 11) (Royal Oak)", 
+            "id": "1389"
         }, 
         {
-            "id": "692", 
             "order": 47, 
-            "name": "ANZAC Day 2016-Lest We Forget (National Event)"
+            "name": "ANZAC Day 2016-Lest We Forget (National Event)", 
+            "id": "692"
         }, 
         {
-            "id": "987", 
             "order": 48, 
-            "name": "ANZAC Day 2017"
+            "name": "ANZAC Day 2017", 
+            "id": "987"
         }, 
         {
-            "id": "1268", 
             "order": 49, 
-            "name": "Anzac Day Parade 2018 (National Event)"
+            "name": "Anzac Day Parade 2018 (National Event)", 
+            "id": "1268"
         }, 
         {
-            "id": "1549", 
             "order": 50, 
-            "name": "ANZAC Day 2019 (National Event)"
+            "name": "ANZAC Day 2019 (National Event)", 
+            "id": "1549"
         }, 
         {
-            "id": "1366", 
             "order": 51, 
-            "name": "Scout Scarf Day (National Event)"
+            "name": "Scout Scarf Day (National Event)", 
+            "id": "1366"
         }, 
         {
-            "id": "1687", 
             "order": 52, 
-            "name": "Scarf Day 2019 (National Event)"
+            "name": "Scarf Day 2019 (National Event)", 
+            "id": "1687"
         }, 
         {
-            "id": "1531", 
             "order": 53, 
-            "name": "JOTT 2019 Day Hike (World Events)"
+            "name": "JOTT 2019 Day Hike (World Events)", 
+            "id": "1531"
         }, 
         {
-            "id": "1561", 
             "order": 54, 
-            "name": "JOTT 2019 Night Hike (National Event)"
+            "name": "JOTT 2019 Night Hike (National Event)", 
+            "id": "1561"
         }, 
         {
-            "id": "1680", 
             "order": 55, 
-            "name": "Pinewood Derby 2019"
+            "name": "Pinewood Derby 2019", 
+            "id": "1680"
         }, 
         {
-            "id": "1717", 
             "order": 56, 
-            "name": "Conservation Week 2019 (Award Scheme)"
+            "name": "Conservation Week 2019 (Award Scheme)", 
+            "id": "1717"
         }
     ]
 }
