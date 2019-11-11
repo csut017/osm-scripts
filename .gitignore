@@ -6,3 +6,7 @@ temp_images/*.png
 .vscode/ipch/**/*.bin
 ~*.docx
 ~*.tmp
+Cubs-Signin.docx
+Keas-Signin.docx
+Cubs-Badge Report.docx
+Keas-Badge Report.docx
