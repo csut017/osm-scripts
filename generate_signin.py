@@ -42,28 +42,48 @@ class ReportGenerator(object):
         if self._term is None:
             return
 
+        print('Retrieving members...')
+        members = self._term.load_members(self._conn, include_data=True)
+
         print('Retrieving term programme...')
         programme = self._term.load_programme(self._conn)
         now = date.today()
         night = programme[0]
-        for day in programme:
-            night = day
-            if day.date > now:
-                break
 
-        print('Retrieving members...')
-        members = self._term.load_members(self._conn, include_data=True)
+        print('Generating sign-in sheet(s)...')
+        night_to_find = 'next'
+        if len(sys.argv) > 3:
+            night_to_find = sys.argv[3]
 
-        print('Generating report...')
+        if night_to_find == 'next':
+            for day in programme:
+                night = day
+                if day.date > now:
+                    break
+            self.generate_sign_in_for_night(members, night)
+        elif night_to_find == 'last':
+            for day in programme:
+                if day.date > now:
+                    break
+                night = day
+            self.generate_sign_in_for_night(members, night)
+        elif night_to_find == 'all':
+            for day in programme:
+                self.generate_sign_in_for_night(members, day)
+        else:
+            print('Unknown night selection option: "' + night_to_find + '"')
+
+        print('Done')
+
+    def generate_sign_in_for_night(self, members, night):
+        print('Generating sign-in for "' + night.name + '"...')
         template = ensureExtension(sys.argv[2]+'-Signin-Template', '.docx')
-        filename = ensureExtension(sys.argv[2]+'-Signin', '.docx')
+        filename = ensureExtension(sys.argv[2]+' Sign in Sheet - ' + night.date.strftime('%Y%m%d'), '.docx')
         document = Document(template)
-        self._generate_report(programme, members, document, night)
+        self._generate_report(members, document, night)
 
         print('Saving to %s...' % (filename, ))
         document.save(filename)
-
-        print('Done')
 
     def _set_term(self, args):
         term_name = args[0]
@@ -97,7 +117,7 @@ class ReportGenerator(object):
             self._section = section
             print('-> Section set to %s' % (str(section), ))
     
-    def _generate_report(self, programme, members, doc, night):
+    def _generate_report(self, members, doc, night):
         for para in doc.paragraphs:
             for run in para.runs:
                 if run.text == '{{date}}':
