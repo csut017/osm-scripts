@@ -58,7 +58,7 @@ class ReportGenerator(object):
         if night_to_find == 'next':
             for day in programme:
                 night = day
-                if day.date > now:
+                if day.date >= now:
                     break
             self.generate_sign_in_for_night(members, night)
         elif night_to_find == 'last':
@@ -156,7 +156,10 @@ class ReportGenerator(object):
         row = 1
         table = doc.tables[0]
         for person in report_data:
-            cells = table.rows[row].cells
+            try:
+                cells = table.rows[row].cells
+            except IndexError:
+                print('!! ERROR !! Table full - unable to add additional members !! EROR !!')
             row += 1
             print('...adding row for %s...' % (person[0], ))
             cells[1].text = person[0]
