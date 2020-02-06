@@ -87,7 +87,8 @@ class ReportGenerator(object):
     def _generate_report(self, report, workbook):
         bold = workbook.add_format({'bold': True, 'font_size': 12})
         for meeting in report:
-            print('-> Processing meeting ' + meeting.name + ' on ' + meeting.date.strftime('%d-%m-%Y'))
+            msg = '-> Processing meeting ' + meeting.name + ' on ' + meeting.date.strftime('%d-%m-%Y')
+            print(msg.encode('ascii', 'ignore'))
             ws_name = meeting.date.strftime('%d-%m-%Y') + ' ' + meeting.name
             if len(ws_name) > 30:
                 ws_name = ws_name[0:27] + '...'
