@@ -125,7 +125,7 @@ class ReportGenerator(object):
                 if run.text == '{{activity}}':
                     run.text = night.name
 
-        print '...extracting data'
+        print('...extracting data')
         report_data = []
         for person in members:
             if person.patrol == 'Leaders':
@@ -151,7 +151,7 @@ class ReportGenerator(object):
                         contact_number = ''
             report_data.append([name, contact_person, contact_number])                 
 
-        print '...populating table'
+        print('...populating table')
         report_data.sort(key=lambda r:r[0])
         row = 1
         table = doc.tables[0]
