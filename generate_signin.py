@@ -128,10 +128,10 @@ class ReportGenerator(object):
         print('...extracting data')
         report_data = []
         for person in members:
-            if person.patrol == 'Leaders':
+            if (person.patrol == 'Leaders') or not person.is_active:
                 continue
 
-            name = '%s %s' % (person.first_name, person.last_name)
+            name = '%s %s' % (person.first_name.strip(), person.last_name.strip())
             try:
                 contact = person.custom_data['contact_primary_1']
             except KeyError:
@@ -155,7 +155,7 @@ class ReportGenerator(object):
         report_data.sort(key=lambda r:r[0])
         row = 1
         table = doc.tables[0]
-        for person in report_data:
+        for person in report_data:            
             try:
                 cells = table.rows[row].cells
             except IndexError:
