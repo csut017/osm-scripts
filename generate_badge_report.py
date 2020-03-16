@@ -122,7 +122,7 @@ class ReportGenerator(object):
         clearFormatting(cells[0].paragraphs[0], headingStyle)
         clearFormatting(cells[1].paragraphs[0], headingStyle)
         set_repeat_table_header(table.rows[0])
-        for person in report:
+        for person in [p for p in report if p.is_active]:
             cells = table.add_row().cells
             name = '%s %s' % (person.first_name, person.last_name)
             print('...adding row for %s...' % (name, ))

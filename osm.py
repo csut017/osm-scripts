@@ -643,7 +643,7 @@ class BadgeOrder(object):
             self._badges = { b['id'] : b for b in data['badges'] }
         
     def save(self, badges_path):
-        badges = self._badges.values()
+        badges = list(self._badges.values())
         badges.sort(key=self._sort_by_order)
         data = {
             'badges': badges
